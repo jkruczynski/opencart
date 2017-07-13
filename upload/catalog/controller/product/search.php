@@ -5,8 +5,12 @@ class ControllerProductSearch extends Controller {
 
 		$this->load->model('catalog/category');
 
-		$this->load->model('catalog/product');
-
+		if(isset($_COOKIE['search']) && $_COOKIE['search'] == 'B'){
+				$this->load->model('catalog/placeholder');
+		}else{
+				$this->load->model('catalog/product');
+		}
+		
 		$this->load->model('tool/image');
 
 		if (isset($this->request->get['search'])) {
@@ -186,9 +190,13 @@ class ControllerProductSearch extends Controller {
 				'limit'               => $limit
 			);
 
+		if(isset($_COOKIE['search']) && $_COOKIE['search'] == 'B'){
+			$product_total = $this->model_catalog_placeholder->getTotalProducts($filter_data);
+			$results = $this->model_catalog_placeholder->getProducts($filter_data);
+		}else{
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
-
 			$results = $this->model_catalog_product->getProducts($filter_data);
+		}
 
 			foreach ($results as $result) {
 				if ($result['image']) {
